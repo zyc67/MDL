@@ -1,0 +1,401 @@
+/* pages/payment/payment.wxss */
+
+.payment-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding-bottom: 140rpx;
+}
+
+/* 订单信息 */
+.order-info {
+  background-color: white;
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.order-image {
+  width: 120rpx;
+  height: 80rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+
+.order-details {
+  flex: 1;
+}
+
+.order-title {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.order-meta {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.order-price {
+  font-size: 32rpx;
+  color: #ff4757;
+  font-weight: 600;
+}
+
+/* 参与人信息 */
+.participant-section,
+.contact-section,
+.coupon-section,
+.cost-section,
+.payment-method-section {
+  background-color: white;
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.edit-btn {
+  font-size: 26rpx;
+  color: #4A90E2;
+}
+
+.participant-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.participant-item:last-child {
+  border-bottom: none;
+}
+
+.participant-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.participant-info {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 联系人信息 */
+.contact-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.contact-details {
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 优惠券选择 */
+.coupon-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+}
+
+.coupon-info {
+  flex: 1;
+}
+
+.coupon-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.coupon-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.coupon-arrow {
+  width: 24rpx;
+  height: 24rpx;
+  color: #ccc;
+}
+
+/* 费用明细 */
+.cost-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+}
+
+.cost-label {
+  color: #666;
+}
+
+.cost-value {
+  color: #333;
+}
+
+.cost-total {
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 20rpx;
+  margin-top: 20rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.cost-total .cost-value {
+  color: #ff4757;
+}
+
+/* 支付方式 */
+.payment-methods {
+  margin-top: 20rpx;
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.payment-method:last-child {
+  border-bottom: none;
+}
+
+.method-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-right: 20rpx;
+}
+
+.method-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 协议确认 */
+.agreement-section {
+  background-color: white;
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+}
+
+.agreement-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.agreement-item:last-child {
+  margin-bottom: 0;
+}
+
+.agreement-checkbox {
+  margin-right: 16rpx;
+}
+
+.agreement-link {
+  color: #4A90E2;
+  text-decoration: underline;
+}
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 -2rpx 20rpx rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.payment-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.total-amount {
+  font-size: 36rpx;
+  color: #ff4757;
+  font-weight: 600;
+}
+
+.payment-note {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.pay-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 100%);
+  color: white;
+  border: none;
+  border-radius: 50rpx;
+  padding: 28rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.pay-btn.disabled {
+  background-color: #ccc;
+}
+
+.pay-btn.loading {
+  background-color: #999;
+}
+
+/* 优惠券弹窗 */
+.coupon-modal,
+.participant-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  width: 100%;
+  max-height: 80%;
+  border-radius: 20rpx 20rpx 0 0;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-body {
+  max-height: 800rpx;
+  overflow-y: scroll;
+}
+
+.coupon-item {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  display: flex;
+  align-items: center;
+}
+
+.coupon-card {
+  flex: 1;
+  background: linear-gradient(135deg, #ff4757 0%, #ff6b7d 100%);
+  border-radius: 12rpx;
+  padding: 24rpx;
+  color: white;
+  margin-right: 20rpx;
+}
+
+.coupon-discount {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.coupon-condition {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-bottom: 8rpx;
+}
+
+.coupon-expire {
+  font-size: 22rpx;
+  opacity: 0.8;
+}
+
+.coupon-radio {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.modal-footer {
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.confirm-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 100%);
+  color: white;
+  border: none;
+  border-radius: 50rpx;
+  padding: 28rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+/* 参与人编辑弹窗 */
+.participant-modal .modal-content {
+  max-height: 90%;
+}
+
+.form-item {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.form-input {
+  width: 100%;
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 8rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+}
+
+.form-picker {
+  background-color: #f8f9fa;
+  border-radius: 8rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.form-placeholder {
+  color: #999;
+} 

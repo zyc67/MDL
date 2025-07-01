@@ -1,0 +1,152 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <icon class="search-icon" type="search" size="16"></icon>
+      <input class="search-input" placeholder="搜索研学活动" bindinput="onSearchInput" value="{{searchValue}}" />
+    </view>
+    <view class="filter-btn" bindtap="showFilterModal">
+      <icon class="filter-icon" type="search" size="16"></icon>
+      <text>筛选</text>
+    </view>
+  </view>
+
+  <!-- 轮播图 -->
+  <view class="banner-section">
+    <swiper class="banner-swiper" indicator-dots="{{true}}" autoplay="{{true}}" interval="3000" duration="500" circular="{{true}}">
+      <swiper-item wx:for="{{bannerList}}" wx:key="id">
+        <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="banner-content">
+          <text class="banner-title">{{item.title}}</text>
+          <text class="banner-desc">{{item.description}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 分类标签 -->
+  <view class="category-section">
+    <scroll-view class="category-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
+      <view class="category-list">
+        <view 
+          class="category-item {{currentCategory === item.id ? 'active' : ''}}" 
+          wx:for="{{categoryList}}" 
+          wx:key="id"
+          bindtap="onCategoryTap"
+          data-id="{{item.id}}"
+        >
+          <image class="category-icon" src="{{item.icon}}" />
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 研学活动列表 -->
+  <view class="study-list">
+    <view class="section-header">
+      <text class="section-title">精选研学</text>
+      <text class="section-more">更多 ></text>
+    </view>
+    
+    <view class="study-cards">
+      <view 
+        class="study-card" 
+        wx:for="{{studyList}}" 
+        wx:key="id"
+        bindtap="goToDetail"
+        data-id="{{item.id}}"
+      >
+        <!-- 研学卡片图片 -->
+        <view class="card-image-wrapper">
+          <image class="card-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="card-tag">{{item.tag}}</view>
+          <view class="card-price">
+            <text class="price-symbol">¥</text>
+            <text class="price-amount">{{item.price}}</text>
+            <text class="price-unit">/人</text>
+          </view>
+        </view>
+        
+        <!-- 研学卡片内容 -->
+        <view class="card-content">
+          <text class="card-title">{{item.title}}</text>
+          <view class="card-info">
+            <view class="info-item">
+              <icon class="info-icon" type="success" size="12" color="#4A90E2"></icon>
+              <text class="info-text">{{item.location}}</text>
+            </view>
+            <view class="info-item">
+              <icon class="info-icon" type="success" size="12" color="#4A90E2"></icon>
+              <text class="info-text">{{item.duration}}天</text>
+            </view>
+          </view>
+          <view class="card-desc">{{item.description}}</view>
+          <view class="card-footer">
+            <view class="rating">
+              <text class="rating-score">{{item.rating}}</text>
+              <text class="rating-text">分</text>
+              <text class="rating-count">({{item.reviewCount}}评价)</text>
+            </view>
+            <view class="participants">
+              <text class="participants-text">已有{{item.participants}}人参加</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore}}">
+    <view class="loading" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+    <view class="load-more-btn" wx:else bindtap="loadMore">
+      <text>加载更多</text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{studyList.length === 0 && !loading}}">
+    <image class="empty-image" src="/images/empty.png" />
+    <text class="empty-text">暂无研学活动</text>
+  </view>
+</view>
+
+<!-- 筛选弹窗 -->
+<view class="filter-modal {{showFilter ? 'show' : ''}}" bindtap="hideFilterModal">
+  <view class="filter-content" catchtap="stopPropagation">
+    <view class="filter-header">
+      <text class="filter-title">筛选</text>
+      <icon class="filter-close" type="clear" size="20" bindtap="hideFilterModal"></icon>
+    </view>
+    
+    <view class="filter-section">
+      <text class="filter-label">价格区间</text>
+      <view class="price-range">
+        <view class="price-item {{priceRange === '0-500' ? 'active' : ''}}" bindtap="selectPriceRange" data-range="0-500">¥0-500</view>
+        <view class="price-item {{priceRange === '500-1000' ? 'active' : ''}}" bindtap="selectPriceRange" data-range="500-1000">¥500-1000</view>
+        <view class="price-item {{priceRange === '1000-2000' ? 'active' : ''}}" bindtap="selectPriceRange" data-range="1000-2000">¥1000-2000</view>
+        <view class="price-item {{priceRange === '2000+' ? 'active' : ''}}" bindtap="selectPriceRange" data-range="2000+">¥2000+</view>
+      </view>
+    </view>
+    
+    <view class="filter-section">
+      <text class="filter-label">活动天数</text>
+      <view class="duration-range">
+        <view class="duration-item {{duration === '1' ? 'active' : ''}}" bindtap="selectDuration" data-duration="1">1天</view>
+        <view class="duration-item {{duration === '2-3' ? 'active' : ''}}" bindtap="selectDuration" data-duration="2-3">2-3天</view>
+        <view class="duration-item {{duration === '4-7' ? 'active' : ''}}" bindtap="selectDuration" data-duration="4-7">4-7天</view>
+        <view class="duration-item {{duration === '7+' ? 'active' : ''}}" bindtap="selectDuration" data-duration="7+">7天以上</view>
+      </view>
+    </view>
+    
+    <view class="filter-actions">
+      <button class="filter-reset" bindtap="resetFilter">重置</button>
+      <button class="filter-confirm btn-primary" bindtap="confirmFilter">确定</button>
+    </view>
+  </view>
+</view> 

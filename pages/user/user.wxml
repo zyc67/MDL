@@ -1,0 +1,183 @@
+<!--pages/user/user.wxml-->
+<view class="container">
+  <!-- 用户信息头部 -->
+  <view class="user-header">
+    <view class="user-bg"></view>
+    <view class="user-info">
+      <view class="avatar-section" bindtap="chooseAvatar">
+        <image class="user-avatar" src="{{userInfo.avatarUrl || 'https://img.icons8.com/color/100/user.png'}}" />
+        <view class="avatar-edit">
+          <icon type="success" size="16" color="#fff"></icon>
+        </view>
+      </view>
+      <view class="user-details">
+        <text class="user-name">{{userInfo.nickName || '点击登录'}}</text>
+        <text class="user-level">{{userInfo.level || 'VIP 0'}}</text>
+        <view class="user-progress" wx:if="{{userInfo.nickName}}">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{userInfo.progress || 0}}%"></view>
+          </view>
+          <text class="progress-text">距离下一级还需{{userInfo.nextLevelPoints || 0}}积分</text>
+        </view>
+      </view>
+      <view class="login-btn" wx:if="{{!userInfo.nickName}}" bindtap="handleLogin">
+        <text>登录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats-section" wx:if="{{userInfo.nickName}}">
+    <view class="stat-item" bindtap="goToOrders">
+      <text class="stat-number">{{userStats.totalOrders || 0}}</text>
+      <text class="stat-label">总订单</text>
+    </view>
+    <view class="stat-item" bindtap="goToFavorites">
+      <text class="stat-number">{{userStats.favorites || 0}}</text>
+      <text class="stat-label">收藏</text>
+    </view>
+    <view class="stat-item" bindtap="goToPoints">
+      <text class="stat-number">{{userStats.points || 0}}</text>
+      <text class="stat-label">积分</text>
+    </view>
+    <view class="stat-item" bindtap="goToCoupons">
+      <text class="stat-number">{{userStats.coupons || 0}}</text>
+      <text class="stat-label">优惠券</text>
+    </view>
+  </view>
+
+  <!-- 订单状态 -->
+  <view class="order-section" wx:if="{{userInfo.nickName}}">
+    <view class="section-title">
+      <text class="title-text">我的订单</text>
+      <text class="view-all" bindtap="goToAllOrders">查看全部 ></text>
+    </view>
+    <view class="order-types">
+      <view class="order-type" bindtap="goToOrders" data-status="pending">
+        <icon type="waiting" size="24" color="#FF9500"></icon>
+        <text class="type-text">待付款</text>
+        <view class="type-badge" wx:if="{{orderCounts.pending > 0}}">{{orderCounts.pending}}</view>
+      </view>
+      <view class="order-type" bindtap="goToOrders" data-status="confirmed">
+        <icon type="success" size="24" color="#4A90E2"></icon>
+        <text class="type-text">已确认</text>
+        <view class="type-badge" wx:if="{{orderCounts.confirmed > 0}}">{{orderCounts.confirmed}}</view>
+      </view>
+      <view class="order-type" bindtap="goToOrders" data-status="completed">
+        <icon type="success" size="24" color="#2ED573"></icon>
+        <text class="type-text">已完成</text>
+        <view class="type-badge" wx:if="{{orderCounts.completed > 0}}">{{orderCounts.completed}}</view>
+      </view>
+      <view class="order-type" bindtap="goToOrders" data-status="refund">
+        <icon type="info" size="24" color="#999"></icon>
+        <text class="type-text">退款/售后</text>
+        <view class="type-badge" wx:if="{{orderCounts.refund > 0}}">{{orderCounts.refund}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-group">
+      <view class="menu-item" bindtap="goToFavorites">
+        <icon type="success" size="20" color="#FF4757"></icon>
+        <text class="menu-text">我的收藏</text>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+      <view class="menu-item" bindtap="goToCart">
+        <icon type="success" size="20" color="#4A90E2"></icon>
+        <text class="menu-text">购物车</text>
+        <view class="menu-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+      <view class="menu-item" bindtap="goToAddress">
+        <icon type="success" size="20" color="#2ED573"></icon>
+        <text class="menu-text">收货地址</text>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <view class="menu-item" bindtap="goToCoupons">
+        <icon type="success" size="20" color="#FF9500"></icon>
+        <text class="menu-text">优惠券</text>
+        <view class="menu-badge" wx:if="{{userStats.coupons > 0}}">{{userStats.coupons}}</view>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+      <view class="menu-item" bindtap="goToPoints">
+        <icon type="success" size="20" color="#9C27B0"></icon>
+        <text class="menu-text">积分商城</text>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+      <view class="menu-item" bindtap="goToInvite">
+        <icon type="success" size="20" color="#FF5722"></icon>
+        <text class="menu-text">邀请好友</text>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <view class="menu-item" bindtap="contactService">
+        <icon type="success" size="20" color="#607D8B"></icon>
+        <text class="menu-text">联系客服</text>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+      <view class="menu-item" bindtap="goToFeedback">
+        <icon type="success" size="20" color="#795548"></icon>
+        <text class="menu-text">意见反馈</text>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+      <view class="menu-item" bindtap="goToAbout">
+        <icon type="success" size="20" color="#9E9E9E"></icon>
+        <text class="menu-text">关于我们</text>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近活动 -->
+  <view class="recent-section" wx:if="{{recentActivities.length > 0}}">
+    <view class="section-title">
+      <text class="title-text">最近参与</text>
+    </view>
+    <view class="recent-list">
+      <view class="recent-item" wx:for="{{recentActivities}}" wx:key="id" bindtap="goToActivityDetail" data-id="{{item.id}}">
+        <image class="recent-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="recent-info">
+          <text class="recent-title">{{item.title}}</text>
+          <text class="recent-date">{{item.date}}</text>
+          <view class="recent-status {{item.status}}">{{item.statusText}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置按钮 -->
+  <view class="settings-section" wx:if="{{userInfo.nickName}}">
+    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+  </view>
+</view>
+
+<!-- 登录弹窗 -->
+<view class="login-modal {{showLoginModal ? 'show' : ''}}" bindtap="hideLoginModal">
+  <view class="login-content" catchtap="stopPropagation">
+    <view class="login-header">
+      <text class="login-title">登录研学之旅</text>
+      <icon class="login-close" type="clear" size="20" bindtap="hideLoginModal"></icon>
+    </view>
+    <view class="login-body">
+      <image class="login-logo" src="https://img.icons8.com/color/120/study.png" />
+      <text class="login-desc">登录后可享受更多专属服务</text>
+      <button class="login-wechat-btn btn-primary" open-type="getUserProfile" bindgetuserprofile="onGetUserProfile">
+        <icon type="success" size="20" color="#fff"></icon>
+        <text>微信快速登录</text>
+      </button>
+      <view class="login-agreement">
+        <text>登录即表示同意</text>
+        <text class="agreement-link" bindtap="showAgreement">《用户协议》</text>
+        <text>和</text>
+        <text class="agreement-link" bindtap="showPrivacy">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+</view> 

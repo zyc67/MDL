@@ -1,0 +1,193 @@
+<!--pages/study-detail/study-detail.wxml-->
+<view class="container">
+  <!-- 头部图片轮播 -->
+  <view class="detail-header">
+    <swiper class="detail-swiper" indicator-dots="{{true}}" autoplay="{{false}}" circular="{{true}}">
+      <swiper-item wx:for="{{studyDetail.images}}" wx:key="*this">
+        <image class="detail-image" src="{{item}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
+    
+    <!-- 收藏按钮 -->
+    <view class="favorite-btn {{isFavorite ? 'active' : ''}}" bindtap="toggleFavorite">
+      <icon type="{{isFavorite ? 'success' : 'success_no_circle'}}" size="20" color="{{isFavorite ? '#FF4757' : '#fff'}}"></icon>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="detail-info">
+    <view class="info-header">
+      <text class="detail-title">{{studyDetail.title}}</text>
+      <view class="detail-price">
+        <text class="price-symbol">¥</text>
+        <text class="price-amount">{{studyDetail.price}}</text>
+        <text class="price-unit">/人</text>
+      </view>
+    </view>
+    
+    <view class="info-tags">
+      <text class="tag">{{studyDetail.tag}}</text>
+      <text class="location">📍 {{studyDetail.location}}</text>
+      <text class="duration">⏰ {{studyDetail.duration}}天</text>
+    </view>
+    
+    <view class="rating-section">
+      <view class="rating">
+        <text class="rating-score">{{studyDetail.rating}}</text>
+        <text class="rating-text">分</text>
+        <view class="stars">
+          <icon wx:for="{{5}}" wx:key="*this" type="{{index < Math.floor(studyDetail.rating) ? 'success' : 'circle'}}" size="12" color="#FFD700"></icon>
+        </view>
+        <text class="rating-count">({{studyDetail.reviewCount}}评价)</text>
+      </view>
+      <text class="participants">已有{{studyDetail.participants}}人参加</text>
+    </view>
+  </view>
+
+  <!-- 活动亮点 -->
+  <view class="section highlights">
+    <view class="section-title">
+      <text class="title-text">🌟 活动亮点</text>
+    </view>
+    <view class="highlights-list">
+      <view class="highlight-item" wx:for="{{studyDetail.highlights}}" wx:key="*this">
+        <icon type="success" size="16" color="#4A90E2"></icon>
+        <text class="highlight-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 详细描述 -->
+  <view class="section description">
+    <view class="section-title">
+      <text class="title-text">📝 详细介绍</text>
+    </view>
+    <view class="desc-content">
+      <text class="desc-text">{{studyDetail.description}}</text>
+    </view>
+  </view>
+
+  <!-- 行程安排 -->
+  <view class="section schedule">
+    <view class="section-title">
+      <text class="title-text">📅 行程安排</text>
+    </view>
+    <view class="schedule-list">
+      <view class="schedule-item" wx:for="{{studyDetail.schedule}}" wx:key="day">
+        <view class="schedule-day">
+          <text class="day-number">第{{item.day}}天</text>
+        </view>
+        <view class="schedule-content">
+          <text class="schedule-title">{{item.title}}</text>
+          <text class="schedule-desc">{{item.description}}</text>
+          <view class="schedule-time">{{item.time}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 费用说明 -->
+  <view class="section pricing">
+    <view class="section-title">
+      <text class="title-text">💰 费用说明</text>
+    </view>
+    <view class="pricing-content">
+      <view class="pricing-item">
+        <text class="pricing-label">费用包含：</text>
+        <text class="pricing-text">{{studyDetail.priceInclude}}</text>
+      </view>
+      <view class="pricing-item">
+        <text class="pricing-label">费用不含：</text>
+        <text class="pricing-text">{{studyDetail.priceExclude}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 注意事项 -->
+  <view class="section notice">
+    <view class="section-title">
+      <text class="title-text">⚠️ 注意事项</text>
+    </view>
+    <view class="notice-list">
+      <view class="notice-item" wx:for="{{studyDetail.notices}}" wx:key="*this">
+        <text class="notice-text">• {{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 用户评价 -->
+  <view class="section reviews">
+    <view class="section-title">
+      <text class="title-text">💬 用户评价</text>
+      <text class="view-all" bindtap="viewAllReviews">查看全部 ></text>
+    </view>
+    <view class="reviews-list">
+      <view class="review-item" wx:for="{{studyDetail.reviews}}" wx:key="id">
+        <view class="review-header">
+          <image class="reviewer-avatar" src="{{item.avatar}}" />
+          <view class="reviewer-info">
+            <text class="reviewer-name">{{item.nickname}}</text>
+            <view class="review-rating">
+              <icon wx:for="{{5}}" wx:key="*this" type="{{index < item.rating ? 'success' : 'circle'}}" size="10" color="#FFD700"></icon>
+            </view>
+          </view>
+          <text class="review-date">{{item.date}}</text>
+        </view>
+        <text class="review-content">{{item.content}}</text>
+        <view class="review-images" wx:if="{{item.images && item.images.length > 0}}">
+          <image class="review-image" wx:for="{{item.images}}" wx:key="*this" src="{{item}}" mode="aspectFill" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 推荐活动 -->
+  <view class="section recommendations">
+    <view class="section-title">
+      <text class="title-text">🎯 相关推荐</text>
+    </view>
+    <scroll-view class="recommend-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
+      <view class="recommend-list">
+        <view class="recommend-item" wx:for="{{recommendList}}" wx:key="id" bindtap="goToRecommend" data-id="{{item.id}}">
+          <image class="recommend-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="recommend-info">
+            <text class="recommend-title">{{item.title}}</text>
+            <view class="recommend-price">
+              <text class="price-symbol">¥</text>
+              <text class="price-amount">{{item.price}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view class="bottom-placeholder"></view>
+</view>
+
+<!-- 底部操作栏 -->
+<view class="bottom-bar">
+  <view class="bar-left">
+    <view class="contact-btn" bindtap="contactService">
+      <icon type="success" size="20" color="#4A90E2"></icon>
+      <text>客服</text>
+    </view>
+    <view class="share-btn" bindtap="shareActivity">
+      <icon type="success" size="20" color="#4A90E2"></icon>
+      <text>分享</text>
+    </view>
+  </view>
+  <view class="bar-right">
+    <button class="add-cart-btn" bindtap="addToCart">加入购物车</button>
+    <button class="buy-now-btn btn-primary" bindtap="buyNow">立即报名</button>
+  </view>
+</view>
+
+<!-- 加载中状态 -->
+<view class="loading-mask" wx:if="{{loading}}">
+  <view class="loading">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+</view> 

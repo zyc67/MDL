@@ -1,0 +1,244 @@
+<!--pages/payment/payment.wxml-->
+<view class="container">
+  <!-- 订单信息 -->
+  <view class="order-info">
+    <view class="section-title">
+      <text class="title-text">📋 订单信息</text>
+    </view>
+    <view class="order-item">
+      <image class="order-image" src="{{orderInfo.image}}" mode="aspectFill" />
+      <view class="order-content">
+        <text class="order-title">{{orderInfo.title}}</text>
+        <view class="order-details">
+          <text class="order-time">📅 {{orderInfo.date}}</text>
+          <text class="order-location">📍 {{orderInfo.location}}</text>
+        </view>
+        <view class="order-price-info">
+          <text class="order-quantity">数量：{{orderInfo.quantity}}</text>
+          <view class="order-price">
+            <text class="price-symbol">¥</text>
+            <text class="price-amount">{{orderInfo.price}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 参与人信息 -->
+  <view class="participant-info">
+    <view class="section-title">
+      <text class="title-text">👥 参与人信息</text>
+      <text class="edit-btn" bindtap="editParticipants">编辑</text>
+    </view>
+    <view class="participant-list">
+      <view class="participant-item" wx:for="{{participants}}" wx:key="id">
+        <view class="participant-details">
+          <text class="participant-name">{{item.name}}</text>
+          <text class="participant-id">身份证：{{item.idCard}}</text>
+          <text class="participant-phone">电话：{{item.phone}}</text>
+        </view>
+        <view class="participant-type">{{item.type}}</view>
+      </view>
+    </view>
+    <view class="add-participant" bindtap="addParticipant">
+      <icon type="success" size="16" color="#4A90E2"></icon>
+      <text>添加参与人</text>
+    </view>
+  </view>
+
+  <!-- 联系人信息 -->
+  <view class="contact-info">
+    <view class="section-title">
+      <text class="title-text">📱 联系人信息</text>
+      <text class="edit-btn" bindtap="editContact">编辑</text>
+    </view>
+    <view class="contact-details">
+      <text class="contact-name">{{contactInfo.name}}</text>
+      <text class="contact-phone">{{contactInfo.phone}}</text>
+    </view>
+  </view>
+
+  <!-- 优惠券 -->
+  <view class="coupon-section">
+    <view class="coupon-item" bindtap="selectCoupon">
+      <view class="coupon-left">
+        <icon type="success" size="20" color="#FF9500"></icon>
+        <text class="coupon-text">
+          {{selectedCoupon ? selectedCoupon.name : '选择优惠券'}}
+        </text>
+      </view>
+      <view class="coupon-right">
+        <text class="coupon-discount" wx:if="{{selectedCoupon}}">-¥{{selectedCoupon.discount}}</text>
+        <icon type="search" size="16" color="#ccc"></icon>
+      </view>
+    </view>
+  </view>
+
+  <!-- 费用明细 */
+  <view class="cost-detail">
+    <view class="section-title">
+      <text class="title-text">💰 费用明细</text>
+    </view>
+    <view class="cost-list">
+      <view class="cost-item">
+        <text class="cost-label">活动费用</text>
+        <text class="cost-value">¥{{costDetail.activityFee}}</text>
+      </view>
+      <view class="cost-item" wx:if="{{costDetail.serviceFee > 0}}">
+        <text class="cost-label">服务费</text>
+        <text class="cost-value">¥{{costDetail.serviceFee}}</text>
+      </view>
+      <view class="cost-item" wx:if="{{costDetail.insuranceFee > 0}}">
+        <text class="cost-label">保险费</text>
+        <text class="cost-value">¥{{costDetail.insuranceFee}}</text>
+      </view>
+      <view class="cost-item discount" wx:if="{{costDetail.discount > 0}}">
+        <text class="cost-label">优惠券减免</text>
+        <text class="cost-value">-¥{{costDetail.discount}}</text>
+      </view>
+      <view class="cost-divider"></view>
+      <view class="cost-item total">
+        <text class="cost-label">应付总额</text>
+        <text class="cost-value">¥{{costDetail.totalAmount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 支付方式 -->
+  <view class="payment-method">
+    <view class="section-title">
+      <text class="title-text">💳 支付方式</text>
+    </view>
+    <view class="method-list">
+      <view 
+        class="method-item {{selectedPayMethod === 'wechat' ? 'active' : ''}}" 
+        bindtap="selectPayMethod" 
+        data-method="wechat"
+      >
+        <image class="method-icon" src="https://img.icons8.com/color/60/wechat.png" />
+        <text class="method-name">微信支付</text>
+        <icon type="{{selectedPayMethod === 'wechat' ? 'success' : 'circle'}}" size="20" color="{{selectedPayMethod === 'wechat' ? '#4A90E2' : '#ccc'}}"></icon>
+      </view>
+      <view 
+        class="method-item {{selectedPayMethod === 'alipay' ? 'active' : ''}}" 
+        bindtap="selectPayMethod" 
+        data-method="alipay"
+      >
+        <image class="method-icon" src="https://img.icons8.com/color/60/alipay.png" />
+        <text class="method-name">支付宝</text>
+        <icon type="{{selectedPayMethod === 'alipay' ? 'success' : 'circle'}}" size="20" color="{{selectedPayMethod === 'alipay' ? '#4A90E2' : '#ccc'}}"></icon>
+      </view>
+    </view>
+  </view>
+
+  <!-- 协议确认 */
+  <view class="agreement-section">
+    <view class="agreement-check" bindtap="toggleAgreement">
+      <icon type="{{agreedToTerms ? 'success' : 'circle'}}" size="16" color="{{agreedToTerms ? '#4A90E2' : '#ccc'}}"></icon>
+      <text class="agreement-text">
+        我已阅读并同意
+        <text class="agreement-link" bindtap="showTerms">《研学活动协议》</text>
+        和
+        <text class="agreement-link" bindtap="showCancelPolicy">《退款政策》</text>
+      </text>
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view class="bottom-placeholder"></view>
+</view>
+
+<!-- 底部支付栏 -->
+<view class="payment-bar">
+  <view class="payment-info">
+    <view class="payment-total">
+      <text class="total-label">应付金额：</text>
+      <text class="total-amount">¥{{costDetail.totalAmount}}</text>
+    </view>
+    <text class="payment-note" wx:if="{{paymentNote}}">{{paymentNote}}</text>
+  </view>
+  <button 
+    class="pay-btn {{agreedToTerms && selectedPayMethod ? 'active' : 'disabled'}}" 
+    disabled="{{!agreedToTerms || !selectedPayMethod || paying}}"
+    bindtap="handlePayment"
+  >
+    {{paying ? '支付中...' : '立即支付'}}
+  </button>
+</view>
+
+<!-- 参与人编辑弹窗 -->
+<view class="participant-modal {{showParticipantModal ? 'show' : ''}}" bindtap="hideParticipantModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <text class="modal-title">编辑参与人</text>
+      <icon class="modal-close" type="clear" size="20" bindtap="hideParticipantModal"></icon>
+    </view>
+    <view class="modal-body">
+      <view class="form-item">
+        <text class="form-label">姓名</text>
+        <input class="form-input" placeholder="请输入姓名" value="{{editingParticipant.name}}" bindinput="onParticipantNameInput" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">身份证号</text>
+        <input class="form-input" placeholder="请输入身份证号" value="{{editingParticipant.idCard}}" bindinput="onParticipantIdInput" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">手机号</text>
+        <input class="form-input" placeholder="请输入手机号" value="{{editingParticipant.phone}}" bindinput="onParticipantPhoneInput" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">参与人类型</text>
+        <picker class="form-picker" bindchange="onParticipantTypeChange" value="{{editingParticipant.typeIndex}}" range="{{participantTypes}}">
+          <view class="picker-text">{{participantTypes[editingParticipant.typeIndex] || '请选择'}}</view>
+        </picker>
+      </view>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-cancel" bindtap="hideParticipantModal">取消</button>
+      <button class="modal-confirm btn-primary" bindtap="saveParticipant">保存</button>
+    </view>
+  </view>
+</view>
+
+<!-- 优惠券选择弹窗 -->
+<view class="coupon-modal {{showCouponModal ? 'show' : ''}}" bindtap="hideCouponModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <text class="modal-title">选择优惠券</text>
+      <icon class="modal-close" type="clear" size="20" bindtap="hideCouponModal"></icon>
+    </view>
+    <view class="modal-body">
+      <view class="coupon-list">
+        <view 
+          class="coupon-card {{selectedCouponId === item.id ? 'selected' : ''}}" 
+          wx:for="{{availableCoupons}}" 
+          wx:key="id"
+          bindtap="chooseCoupon"
+          data-id="{{item.id}}"
+        >
+          <view class="coupon-amount">¥{{item.discount}}</view>
+          <view class="coupon-info">
+            <text class="coupon-name">{{item.name}}</text>
+            <text class="coupon-condition">{{item.condition}}</text>
+            <text class="coupon-expire">有效期至：{{item.expireDate}}</text>
+          </view>
+        </view>
+        <view class="no-coupon {{selectedCouponId === null ? 'selected' : ''}}" bindtap="chooseCoupon" data-id="{{null}}">
+          <text>不使用优惠券</text>
+        </view>
+      </view>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-cancel" bindtap="hideCouponModal">取消</button>
+      <button class="modal-confirm btn-primary" bindtap="confirmCoupon">确定</button>
+    </view>
+  </view>
+</view>
+
+<!-- 加载遮罩 -->
+<view class="loading-mask" wx:if="{{loading}}">
+  <view class="loading">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+</view> 

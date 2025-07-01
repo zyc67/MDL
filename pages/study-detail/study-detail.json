@@ -1,0 +1,7 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "研学详情",
+  "enablePullDownRefresh": false,
+  "backgroundColor": "#f8f8f8",
+  "backgroundTextStyle": "dark"
+} 

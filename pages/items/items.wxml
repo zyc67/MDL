@@ -1,0 +1,143 @@
+<!--pages/items/items.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <icon class="search-icon" type="search" size="16"></icon>
+      <input class="search-input" placeholder="搜索物品" bindinput="onSearchInput" value="{{searchValue}}" />
+    </view>
+    <view class="filter-btn" bindtap="showFilterModal">
+      <icon class="filter-icon" type="search" size="16"></icon>
+      <text>筛选</text>
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <view class="category-section">
+    <scroll-view class="category-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
+      <view class="category-list">
+        <view 
+          class="category-item {{currentCategory === item.id ? 'active' : ''}}" 
+          wx:for="{{categoryList}}" 
+          wx:key="id"
+          bindtap="onCategoryTap"
+          data-id="{{item.id}}"
+        >
+          <image class="category-icon" src="{{item.icon}}" />
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 物品网格列表 -->
+  <view class="items-grid">
+    <view 
+      class="item-card" 
+      wx:for="{{itemList}}" 
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <!-- 物品图片 -->
+      <view class="item-image-wrapper">
+        <image class="item-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="item-discount" wx:if="{{item.discount}}">
+          <text class="discount-text">{{item.discount}}折</text>
+        </view>
+        <view class="item-tag" wx:if="{{item.tag}}">{{item.tag}}</view>
+      </view>
+      
+      <!-- 物品信息 -->
+      <view class="item-content">
+        <text class="item-title">{{item.title}}</text>
+        <text class="item-desc">{{item.description}}</text>
+        
+        <view class="item-footer">
+          <view class="item-price">
+            <text class="price-symbol">¥</text>
+            <text class="price-current">{{item.price}}</text>
+            <text class="price-original" wx:if="{{item.originalPrice}}">¥{{item.originalPrice}}</text>
+          </view>
+          <view class="item-sales">
+            <text class="sales-text">销量{{item.sales}}</text>
+          </view>
+        </view>
+        
+        <view class="item-rating">
+          <view class="rating">
+            <icon wx:for="{{5}}" wx:key="*this" type="{{index < Math.floor(item.rating) ? 'success' : 'circle'}}" size="10" color="#FFD700"></icon>
+            <text class="rating-score">{{item.rating}}</text>
+          </view>
+          <text class="rating-count">({{item.reviewCount}})</text>
+        </view>
+      </view>
+      
+      <!-- 快速购买按钮 -->
+      <view class="quick-buy-btn" bindtap="quickBuy" data-id="{{item.id}}" catchtap="stopPropagation">
+        <icon type="success" size="16" color="#fff"></icon>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore}}">
+    <view class="loading" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+    <view class="load-more-btn" wx:else bindtap="loadMore">
+      <text>加载更多</text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{itemList.length === 0 && !loading}}">
+    <image class="empty-image" src="/images/empty-cart.png" />
+    <text class="empty-text">暂无物品</text>
+    <button class="empty-btn btn-primary" bindtap="goToHome">去首页看看</button>
+  </view>
+</view>
+
+<!-- 筛选弹窗 -->
+<view class="filter-modal {{showFilter ? 'show' : ''}}" bindtap="hideFilterModal">
+  <view class="filter-content" catchtap="stopPropagation">
+    <view class="filter-header">
+      <text class="filter-title">筛选</text>
+      <icon class="filter-close" type="clear" size="20" bindtap="hideFilterModal"></icon>
+    </view>
+    
+    <view class="filter-section">
+      <text class="filter-label">价格区间</text>
+      <view class="price-range">
+        <view class="price-item {{priceRange === '0-50' ? 'active' : ''}}" bindtap="selectPriceRange" data-range="0-50">¥0-50</view>
+        <view class="price-item {{priceRange === '50-100' ? 'active' : ''}}" bindtap="selectPriceRange" data-range="50-100">¥50-100</view>
+        <view class="price-item {{priceRange === '100-200' ? 'active' : ''}}" bindtap="selectPriceRange" data-range="100-200">¥100-200</view>
+        <view class="price-item {{priceRange === '200+' ? 'active' : ''}}" bindtap="selectPriceRange" data-range="200+">¥200+</view>
+      </view>
+    </view>
+    
+    <view class="filter-section">
+      <text class="filter-label">排序方式</text>
+      <view class="sort-options">
+        <view class="sort-item {{sortType === 'default' ? 'active' : ''}}" bindtap="selectSort" data-sort="default">综合</view>
+        <view class="sort-item {{sortType === 'price-asc' ? 'active' : ''}}" bindtap="selectSort" data-sort="price-asc">价格升序</view>
+        <view class="sort-item {{sortType === 'price-desc' ? 'active' : ''}}" bindtap="selectSort" data-sort="price-desc">价格降序</view>
+        <view class="sort-item {{sortType === 'sales' ? 'active' : ''}}" bindtap="selectSort" data-sort="sales">销量优先</view>
+      </view>
+    </view>
+    
+    <view class="filter-actions">
+      <button class="filter-reset" bindtap="resetFilter">重置</button>
+      <button class="filter-confirm btn-primary" bindtap="confirmFilter">确定</button>
+    </view>
+  </view>
+</view>
+
+<!-- 购物车悬浮按钮 -->
+<view class="cart-float-btn" bindtap="goToCart">
+  <icon type="success" size="24" color="#fff"></icon>
+  <view class="cart-badge" wx:if="{{cartCount > 0}}">
+    <text class="badge-text">{{cartCount > 99 ? '99+' : cartCount}}</text>
+  </view>
+</view> 
